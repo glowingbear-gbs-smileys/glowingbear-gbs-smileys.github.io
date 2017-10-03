@@ -58,8 +58,8 @@ class Trie {
             }
         }
         if (!this.allowOverlaps) {
-            let intervalTree: IntervalTree = new IntervalTree(collectedEmits);
-            collectedEmits = <Emit[]>intervalTree.removeOverlaps(collectedEmits);
+            let intervalTree: IntervalTree<Emit> = new IntervalTree<Emit>(collectedEmits);
+            collectedEmits = intervalTree.removeOverlaps(collectedEmits);
         }
         return collectedEmits;
     }
@@ -80,7 +80,7 @@ class Trie {
         return tokens;
     }
     private createFragment(emit: Emit | null, text: string, lastCollectedPosition: number): Token {
-        return Token.fragmentToken(text.substring(lastCollectedPosition + 1, 
+        return Token.fragmentToken(text.substring(lastCollectedPosition + 1,
             emit == null ? text.length : emit.getStart()));
     }
 
@@ -188,7 +188,7 @@ class Interval {
     overlapsWithPoint(point: number): boolean {
         return this.start <= point && point <= this.end;
     }
-    
+
     compareTo(o: Interval) {
         let comparison: number = this.start - o.getStart();
         return comparison != 0 ? comparison : this.end - o.getEnd();
@@ -229,12 +229,12 @@ class Token {
         return this.match;
     }
 }
-class IntervalTree {
-    private readonly rootNode: IntervalNode;
-    constructor(intervals: Interval[]) {
+class IntervalTree<T extends Interval> {
+    private readonly rootNode: IntervalNode<T>;
+    constructor(intervals: T[]) {
         this.rootNode = new IntervalNode(intervals);
     }
-    removeOverlaps(intervals: Interval[]): Interval[] {
+    removeOverlaps(intervals: T[]): T[] {
         intervals.sort((a, b) => {
             let cmp1: number = b.size() - a.size();
             if (cmp1 == 0) {
@@ -242,9 +242,9 @@ class IntervalTree {
             }
             return cmp1;
         });
-        let removeIntervals: Set<Interval> = new Set();
+        let removeIntervals: Set<T> = new Set();
         for (let i = 0; i < intervals.length; i++) {
-            let interval = intervals[i];
+            let interval: T = intervals[i];
             if (removeIntervals.has(interval)) {
                 continue;
             }
@@ -257,16 +257,16 @@ class IntervalTree {
         return intervals;
     }
 }
-class IntervalNode {
+class IntervalNode<T extends Interval> {
     private point: number;
-    private left: IntervalNode | null = null;
-    private right: IntervalNode | null = null;
-    private intervals: Interval[] = [];
+    private left: IntervalNode<T> | null = null;
+    private right: IntervalNode<T> | null = null;
+    private intervals: T[] = [];
 
-    constructor(intervals: Interval[]) {
+    constructor(intervals: T[]) {
         this.point = this.determineMedian(intervals);
-        let toLeft: Interval[] = [];
-        let toRight: Interval[] = [];
+        let toLeft: T[] = [];
+        let toRight: T[] = [];
         for (let i = 0; i < intervals.length; i++) {
             let interval = intervals[i];
             if (interval.getEnd() < this.point) {
@@ -278,13 +278,13 @@ class IntervalNode {
             }
         }
         if (toLeft.length > 0) {
-            this.left = new IntervalNode(toLeft);
+            this.left = new IntervalNode<T>(toLeft);
         }
         if (toRight.length > 0) {
-            this.right = new IntervalNode(toRight);
+            this.right = new IntervalNode<T>(toRight);
         }
     }
-    private determineMedian(intervals: Interval[]): number {
+    private determineMedian(intervals: T[]): number {
         let start: number = -1;
         let end: number = -1;
         for (let i = 0; i < intervals.length; i++) {
@@ -300,8 +300,8 @@ class IntervalNode {
         }
         return (start + end) / 2;
     }
-    findOverlaps(interval: Interval): Interval[] {
-        let overlaps: Interval[] = [];
+    findOverlaps(interval: T): T[] {
+        let overlaps: T[] = [];
 
         if (this.point < interval.getStart()) {
             this.addToOverlaps(interval, overlaps, this.findOverlappingRanges(this.right, interval));
@@ -314,22 +314,21 @@ class IntervalNode {
             this.addToOverlaps(interval, overlaps, this.findOverlappingRanges(this.left, interval));
             this.addToOverlaps(interval, overlaps, this.findOverlappingRanges(this.right, interval));
         }
-
         return overlaps;
     }
-    
-    private addToOverlaps(interval: Interval, overlaps: Interval[], newOverlaps: Interval[]) {
+
+    private addToOverlaps(interval: T, overlaps: T[], newOverlaps: T[]) {
         for (let i = 0; i < newOverlaps.length; i++) {
-            let currentInterval: Interval = newOverlaps[i];
+            let currentInterval: T = newOverlaps[i];
             if (currentInterval != interval) {
                 overlaps.push(currentInterval);
             }
         }
     }
-    private checkForOverlaps(interval: Interval, direction: number): Interval[] {
-        let overlaps: Interval[] = [];
+    private checkForOverlaps(interval: T, direction: number): T[] {
+        let overlaps: T[] = [];
         for (let i = 0; i < this.intervals.length; i++) {
-            let currentInterval: Interval = this.intervals[i];
+            let currentInterval: T = this.intervals[i];
             if (direction == -1) {
                 if (currentInterval.getStart() <= interval.getEnd()) {
                         overlaps.push(currentInterval);
@@ -343,7 +342,7 @@ class IntervalNode {
         }
         return overlaps;
     }
-    private findOverlappingRanges(node: IntervalNode | null, interval: Interval): Interval[] {
+    private findOverlappingRanges(node: IntervalNode<T> | null, interval: T): T[] {
         return node == null ? [] : node.findOverlaps(interval);
     }
 }
@@ -367,7 +366,6 @@ class IntervalNode {
                     result.push(token.getFragment());
                 }
             }
-
             return result.join("");
         }
     });
