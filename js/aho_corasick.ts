@@ -360,7 +360,7 @@ class IntervalNode<T extends Interval> {
             for (let i = 0; i < tokens.length; i++) {
                 let token: Token = tokens[i];
                 if (token.isMatch()) {
-                    let replacement = "<img src=\"smileys/" + smileys_directory[token.getFragment()] + "\">"
+                    let replacement = '<img src="smileys/' + smileys_directory[token.getFragment()] + '" alt="' + token.getFragment() + '">';
                     result.push(replacement);
                 } else {
                     result.push(token.getFragment());
