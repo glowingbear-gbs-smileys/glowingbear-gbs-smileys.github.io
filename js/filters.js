@@ -29,7 +29,7 @@ weechat.filter('newlineTrans', function() {
         if (!enabled || !text) {
             return text;   
         }
-        return text.replace("\\\\", "\\").replace("\\n", "<br>");
+        return text.replace(/\\\\/, "\\").replace(/\\n/, "<br>");
     }
 });
 weechat.filter('irclinky', function() {
