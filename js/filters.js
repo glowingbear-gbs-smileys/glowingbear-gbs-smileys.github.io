@@ -23,29 +23,15 @@ weechat.filter('toArray', function () {
         });
     };
 });
-/*weechat.filter('gbs_smileys', function() {
-    var AHC = new AhoCorasick();
-    var trie = AHC.make_trie();
-    Object.keys(smileys_directory).forEach(function (k, v) {
-        AHC.insert_trie(trie, k);
-    });
-    return function(text) {
-        var we_at = 0;
-        var result = [];
-        var matches = AHC.parse_text(trie, text);
-        for (var i = 0; i < matches.length; i++) {
-            var match = matches[i];
-            result.push(text.substr(we_at, match.offset - we_at));
-            var replacement = "<img src=\"smileys/" + smileys_directory[match.match] + "\">";
-            result.push(replacement);
-            we_at = match.offset + match.size;
+    
+weechat.filter('newlineTrans' function() {
+    return function(text, enabled) {
+        if (!enabled || !text) {
+            return text;   
         }
-        result.push(text.substr(we_at, text.length - we_at));
-
-        return result.join("");
-    };
-
-});*/
+        return text.replace("\\\\", "\\").replace("\\n", "<br>");
+    }
+});
 weechat.filter('irclinky', function() {
     return function(text) {
         if (!text) {
