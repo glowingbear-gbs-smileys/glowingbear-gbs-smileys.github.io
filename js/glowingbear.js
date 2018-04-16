@@ -61,6 +61,7 @@ weechat.controller('WeechatCtrl', ['$rootScope', '$scope', '$store', '$timeout',
         'enableMathjax': false,
         'enableQuickKeys': true,
         'customCSS': '',
+        'translateNewlines': true,
         "currentlyViewedBuffers":{},
     });
     $scope.settings = settings;
