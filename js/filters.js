@@ -24,7 +24,7 @@ weechat.filter('toArray', function () {
     };
 });
     
-weechat.filter('newlineTrans' function() {
+weechat.filter('newlineTrans', function() {
     return function(text, enabled) {
         if (!enabled || !text) {
             return text;   
