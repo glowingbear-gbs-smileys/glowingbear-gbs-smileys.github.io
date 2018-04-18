@@ -55,7 +55,7 @@ weechat.factory('notifications', ['$rootScope', '$log', 'models', 'settings', 'u
         if (serviceworker) {
             navigator.serviceWorker.ready.then(function(registration) {
                 registration.showNotification(title, {
-                    body: body,
+                    body: body.replace(/\\n/g, "\n"),
                     icon: 'assets/img/glowing_bear_128x128.png',
                     vibrate: [200, 100],
                     tag: 'gb-highlight-vib'
