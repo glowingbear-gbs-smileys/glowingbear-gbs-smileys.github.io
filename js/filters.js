@@ -50,7 +50,11 @@ weechat.filter('linkyNS', ['$sanitize', function($sanitize) {
         }
     };
 }]);
-
+weechat.filter('escapeHtml', function() {
+    return function(text) {
+        return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    };
+});
 weechat.filter('toArray', function () {
     return function (obj, storeIdx) {
         if (!(obj instanceof Object)) {
