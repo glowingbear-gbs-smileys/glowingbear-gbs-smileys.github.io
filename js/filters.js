@@ -5,7 +5,7 @@ var weechat = angular.module('weechat');
 
 weechat.filter('linkyNS', ['$sanitize', function($sanitize) {
     var LINKY_URL_REGEXP =
-        /((ftp|https?):\/\/|(mailto:)?[A-Za-z0-9._%+-]+@)([^\s,(){}&]*&([^\s,(){}&gl]|g(?!t)|l(?!t)|gt(?!;)|lt(?!;)))*[^\s(){}&]*/,
+        /((ftp|https?):\/\/|(mailto:)?[A-Za-z0-9._%+-]+@)([^\s(){}&]*&([^\s(){}&gl]|g(?!t)|l(?!t)|gt(?!;)|lt(?!;)))*[^\s(){}&]*/,
     MAILTO_REGEXP = /^mailto:/;
 
     return function(text, target) {
