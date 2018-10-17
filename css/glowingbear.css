@@ -6,7 +6,9 @@ body {
 .no-overflow {
     overflow: hidden;
 }
-
+#sidebar {
+    scrollbar-width: none;
+}
 .mobile {
   display: none;
 }
