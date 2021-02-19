@@ -10,5 +10,5 @@ while read line; do
         words=($line)
         echo "\"${words[1]}\": \"${words[0]}\"," >>smileys.json
     fi
-done < $1/theme
+done < theme
 echo "}" >>smileys.json
